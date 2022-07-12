@@ -1,0 +1,27 @@
+{
+    "name": "hexlet/code",
+    "bin": [
+        "bin/php-package"
+    ],
+    "description": "hexlet project lvl 2",
+    "type": "project",
+    "license": "MIT",
+    "autoload": {
+        "files": [
+            
+        ],
+        "psr-4": {
+            "Hexlet\\Code\\": "src/"
+        }
+    },
+    "version": "0.1",
+    "authors": [
+        {
+            "name": "Egor Rasskazov",
+            "email": "rasskazov.note@gmail.com"
+        }
+    ],
+    "require": {
+        "docopt/docopt": "^1.0"
+    }
+}
