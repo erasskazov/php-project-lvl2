@@ -30,32 +30,51 @@ function diffToStr($diff)
         },
         $diff
     );
-    return implode("\n", ['{', ...$lines, '}']);
+    $result = implode("\n", ['{', ...$lines, '}']);
+    return $result;
 }
 
 function genDiff(string $pathToFile1, string $pathToFile2)
 {
     $json1 = json_decode(file_get_contents($pathToFile1), true);
     $json2 = json_decode(file_get_contents($pathToFile2), true);
-    
+
     $jsonsKeys = array_unique([...array_keys($json1), ...array_keys($json2)]);
     sort($jsonsKeys);
     $diff = array_map(
         function ($key) use ($json1, $json2) {
-            [$inJson1, $inJson2] = [array_key_exists($key, $json1), array_key_exists($key, $json2)]; 
+            [$inJson1, $inJson2] = [array_key_exists($key, $json1), array_key_exists($key, $json2)];
             if (!$inJson2) {
-                return ['key' => $key, 'value' => $json1[$key], 'status' => 'removed'];
+                return [
+                    'key' => $key,
+                    'value' => $json1[$key],
+                    'status' => 'removed'
+                ];
             }
             if (!$inJson1) {
-                return ['key' => $key, 'value' => $json2[$key], 'status' => 'added'];
+                return [
+                    'key' => $key,
+                    'value' => $json2[$key],
+                    'status' => 'added'
+                ];
             }
             if ($json1[$key] === $json2[$key]) {
-                return ['key' => $key, 'value' => $json1[$key], 'status' => 'unchanged'];
+                return [
+                    'key' => $key,
+                    'value' => $json1[$key], 'status' => 'unchanged'
+                ];
             }
-            return ['key' => $key, 'value' => ['json1' => $json1[$key], 'json2' => $json2[$key]], 'status' => 'updated'];
+            return [
+                'key' => $key,
+                'value' => [
+                    'json1' => $json1[$key],
+                    'json2' => $json2[$key]
+                ],
+                'status' => 'updated'
+            ];
         },
         $jsonsKeys
     );
-    return diffToStr($diff);
+    $result = diffToStr($diff);
+    return $result;
 }
-
