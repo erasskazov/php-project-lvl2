@@ -24,5 +24,3 @@ Options:
 DOC;
 
 $args = Docopt::handle($doc, array('version' => 'Generate Diff v0.1'));
-
-// print_r($args);
