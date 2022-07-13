@@ -1,2 +1,7 @@
 /vendor/
 /src/test.php
+logs
+*.swo
+*.swp
+*.cache
+build

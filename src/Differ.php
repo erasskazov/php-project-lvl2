@@ -30,51 +30,46 @@ function diffToStr($diff)
         },
         $diff
     );
-    $result = implode("\n", ['{', ...$lines, '}']);
-    return $result;
+    return implode("\n", ['{', ...$lines, '}']);
 }
 
 function genDiff(string $pathToFile1, string $pathToFile2)
 {
-    $json1 = json_decode(file_get_contents($pathToFile1), true);
-    $json2 = json_decode(file_get_contents($pathToFile2), true);
+    $jsonBefore = json_decode(file_get_contents($pathToFile1), true);
+    $jsonAfter = json_decode(file_get_contents($pathToFile2), true);
 
-    $jsonsKeys = array_unique([...array_keys($json1), ...array_keys($json2)]);
+    $jsonsKeys = array_unique([...array_keys($jsonBefore), ...array_keys($jsonAfter)]);
     sort($jsonsKeys);
     $diff = array_map(
-        function ($key) use ($json1, $json2) {
-            [$inJson1, $inJson2] = [array_key_exists($key, $json1), array_key_exists($key, $json2)];
-            if (!$inJson2) {
+        function ($key) use ($jsonBefore, $jsonAfter) {
+            if (!array_key_exists($key, $jsonAfter)) {
                 return [
                     'key' => $key,
-                    'value' => $json1[$key],
+                    'value' => $jsonBefore[$key],
                     'status' => 'removed'
                 ];
             }
-            if (!$inJson1) {
+            if (!array_key_exists($key, $jsonBefore)) {
                 return [
                     'key' => $key,
-                    'value' => $json2[$key],
+                    'value' => $jsonAfter[$key],
                     'status' => 'added'
                 ];
             }
-            if ($json1[$key] === $json2[$key]) {
-                return [
-                    'key' => $key,
-                    'value' => $json1[$key], 'status' => 'unchanged'
+            if ($jsonBefore[$key] === $jsonAfter[$key]) {
+                return ['key' => $key, 'value' => $jsonBefore[$key], 'status' => 'unchanged'
                 ];
             }
             return [
                 'key' => $key,
                 'value' => [
-                    'json1' => $json1[$key],
-                    'json2' => $json2[$key]
+                    'json1' => $jsonBefore[$key],
+                    'json2' => $jsonAfter[$key]
                 ],
                 'status' => 'updated'
             ];
         },
         $jsonsKeys
     );
-    $result = diffToStr($diff);
-    return $result;
+    return diffToStr($diff);
 }
