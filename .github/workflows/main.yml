@@ -1,0 +1,24 @@
+name: main
+on: push
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+      - name: Install Package
+        run: make install
+      - name: Run linter
+        run: make lint
+      - name: Run Test and publish code coverage
+        uses: paambaati/codeclimate-action@v2.6.0
+        env:
+          CC_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
+        with:
+          coverageCommand: make test-coverage
+          coverageLocations: ${{github.workplace}}/build/logs/clover.xml:clover
+          debug: true
