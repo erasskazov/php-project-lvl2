@@ -17,8 +17,13 @@ class DifferTest extends TestCase
         $this->expectedPlain = file_get_contents($this->getFilePath("result.txt"));
     }
 
-    public function testPlain()
+    public function testPlainJson()
     {
         $this->assertEquals($this->expectedPlain, genDiff($this->getFilePath("before.json"), $this->getFilePath("after.json")));
+    }
+
+    public function testPlainYaml()
+    {
+        $this->assertEquals($this->expectedPlain, genDiff($this->getFilePath("before.yml"), $this->getFilePath("after.yaml")));
     }
 }

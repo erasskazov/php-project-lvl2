@@ -2,6 +2,8 @@
 
 namespace Differ\Differ;
 
+use function Differ\Parsers\parseFile;
+
 function toString(mixed $key, mixed $value): string
 {
     if (is_bool($value)) {
@@ -15,8 +17,8 @@ function diffToStr($diff)
     $lines = array_map(
         function ($item) {
             if ($item['status'] === 'updated') {
-                $strItemJson1 = toString($item['key'], $item['value']['json1']);
-                $strItemJson2 = toString($item['key'], $item['value']['json2']);
+                $strItemJson1 = toString($item['key'], $item['value']['before']);
+                $strItemJson2 = toString($item['key'], $item['value']['after']);
                 return "  - {$strItemJson1}\n  + {$strItemJson2}";
             }
             $strItemJson = toString($item['key'], $item['value']);
@@ -33,43 +35,42 @@ function diffToStr($diff)
     return implode("\n", ['{', ...$lines, '}']);
 }
 
-function genDiff(string $pathToFile1, string $pathToFile2)
+function genDiff(string $pathToFile1, string $pathToFile2, string $fmt = 'stylish')
 {
-    $jsonBefore = json_decode(file_get_contents($pathToFile1), true);
-    $jsonAfter = json_decode(file_get_contents($pathToFile2), true);
-
-    $jsonsKeys = array_unique([...array_keys($jsonBefore), ...array_keys($jsonAfter)]);
-    sort($jsonsKeys);
+    $before = parseFile($pathToFile1);
+    $after = parseFile($pathToFile2);
+    $keys = array_unique([...array_keys($before), ...array_keys($after)]);
+    sort($keys);
     $diff = array_map(
-        function ($key) use ($jsonBefore, $jsonAfter) {
-            if (!array_key_exists($key, $jsonAfter)) {
+        function ($key) use ($before, $after) {
+            if (!array_key_exists($key, $after)) {
                 return [
                     'key' => $key,
-                    'value' => $jsonBefore[$key],
+                    'value' => $before[$key],
                     'status' => 'removed'
                 ];
             }
-            if (!array_key_exists($key, $jsonBefore)) {
+            if (!array_key_exists($key, $before)) {
                 return [
                     'key' => $key,
-                    'value' => $jsonAfter[$key],
+                    'value' => $after[$key],
                     'status' => 'added'
                 ];
             }
-            if ($jsonBefore[$key] === $jsonAfter[$key]) {
-                return ['key' => $key, 'value' => $jsonBefore[$key], 'status' => 'unchanged'
+            if ($before[$key] === $after[$key]) {
+                return ['key' => $key, 'value' => $before[$key], 'status' => 'unchanged'
                 ];
             }
             return [
                 'key' => $key,
                 'value' => [
-                    'json1' => $jsonBefore[$key],
-                    'json2' => $jsonAfter[$key]
+                    'before' => $before[$key],
+                    'after' => $after[$key]
                 ],
                 'status' => 'updated'
             ];
         },
-        $jsonsKeys
+        $keys
     );
     return diffToStr($diff);
 }
