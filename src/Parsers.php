@@ -15,5 +15,3 @@ function parseFile($pathToFile)
     }
     throw new \Exception("Format {$extension} not support");
 }
-
-// var_dump();
