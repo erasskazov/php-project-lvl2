@@ -10,7 +10,7 @@ class DifferTest extends TestCase
 
     private function getFilePath($name, $type = 'plain')
     {
-        return $type === 'plain' ? $this->pathPlain . $name : $this->pathNested . $name;
+        return ($type === 'plain' ? $this->pathPlain : $this->pathNested) . $name;
     }
 
     protected function setUp(): void
@@ -27,7 +27,7 @@ class DifferTest extends TestCase
 
     public function testNested()
     {
-        $this->assertEquals($this->expectedNested, genDiff($this->getFilePath("before.json"), $this->getFilePath("after.json")));
-        $this->assertEquals($this->expectedNested, genDiff($this->getFilePath("before.yaml"), $this->getFilePath("after.yaml")));
+        $this->assertEquals($this->expectedNested, genDiff($this->getFilePath("before.json", 'nested'), $this->getFilePath("after.json", 'nested')));
+        $this->assertEquals($this->expectedNested, genDiff($this->getFilePath("before.yaml", 'nested'), $this->getFilePath("after.yaml", 'nested')));
     }
 }
