@@ -19,5 +19,3 @@ function genDiff(string $pathToFile1, string $pathToFile2, string $fmt = 'stylis
     print_r($result);
     return $result;
 }
-
-
