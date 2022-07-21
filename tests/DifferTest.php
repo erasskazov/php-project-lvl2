@@ -5,29 +5,29 @@ use function Differ\Differ\genDiff;
 
 class DifferTest extends TestCase
 {
-    private string $pathPlain = __DIR__ . "/fixtures/Plain/";
-    private string $pathNested = __DIR__ . "/fixtures/Nested/";
+    private string $path = __DIR__ . "/fixtures/Nested/";
 
-    private function getFilePath($name, $type = 'plain')
+    private function getFilePath($name)
     {
-        return ($type === 'plain' ? $this->pathPlain : $this->pathNested) . $name;
+        return $this->path . $name;
     }
 
     protected function setUp(): void
     {
-        $this->expectedPlain = file_get_contents($this->getFilePath("result.txt", 'plain'));
-        $this->expectedNested = file_get_contents($this->getFilePath("result.txt", 'nested'));
+        $this->expectedStylish = file_get_contents($this->getFilePath("resultStylish.txt"));
+        $this->expectedPlain = file_get_contents($this->getFilePath("resultPlain.txt"));
+    }
+
+    public function testStylish()
+    {
+        $this->assertEquals($this->expectedStylish, genDiff($this->getFilePath("before.json"), $this->getFilePath("after.json")));
+        $this->assertEquals($this->expectedStylish, genDiff($this->getFilePath("before.yaml"), $this->getFilePath("after.yaml")));
     }
 
     public function testPlain()
     {
-        $this->assertEquals($this->expectedPlain, genDiff($this->getFilePath("before.json"), $this->getFilePath("after.json")));
-        $this->assertEquals($this->expectedPlain, genDiff($this->getFilePath("before.yml"), $this->getFilePath("after.yml")));
+        $this->assertEquals($this->expectedPlain, genDiff($this->getFilePath("before.json"), $this->getFilePath("after.json"), 'plain'));
+        $this->assertEquals($this->expectedPlain, genDiff($this->getFilePath("before.yaml"), $this->getFilePath("after.yaml"), 'plain'));
     }
 
-    public function testNested()
-    {
-        $this->assertEquals($this->expectedNested, genDiff($this->getFilePath("before.json", 'nested'), $this->getFilePath("after.json", 'nested')));
-        $this->assertEquals($this->expectedNested, genDiff($this->getFilePath("before.yaml", 'nested'), $this->getFilePath("after.yaml", 'nested')));
-    }
 }

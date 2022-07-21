@@ -2,13 +2,13 @@
 
 namespace Differ\Formatters\Stylish;
 
-use function Differ\Tree\Builder\toString;
-use function Differ\Tree\Builder\hasChildren;
-use function Differ\Tree\Builder\getChildren;
-use function Differ\Tree\Builder\getStatus;
-use function Differ\Tree\Builder\getValue;
-use function Differ\Tree\Builder\getKey;
-use function Differ\Tree\Builder\getDiff;
+use function Differ\Trees\toString;
+use function Differ\Trees\hasChildren;
+use function Differ\Trees\getChildren;
+use function Differ\Trees\getStatus;
+use function Differ\Trees\getValue;
+use function Differ\Trees\getKey;
+use function Differ\Trees\getDiff;
 
 const INDENTS = array(
     'added' => '+ ',
