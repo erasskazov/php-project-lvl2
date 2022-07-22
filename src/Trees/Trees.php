@@ -11,72 +11,72 @@ function toString(mixed $key, mixed $value): string
     return "{$key}: {$stringValue}";
 }
 
-function isLeaf($node)
+function isLeaf(array $node)
 {
     return $node['type'] === 'leaf';
 }
 
-function isInternal($node)
+function isInternal(array $node)
 {
     return $node['type'] === 'internal';
 }
 
-function hasChildren($node)
+function hasChildren(array $node)
 {
     return is_array($node) && array_key_exists('children', $node);
 }
 
-function getChildren($node)
+function getChildren(array $node)
 {
     return $node['children'];
 }
 
-function getStatus($node)
+function getStatus(array $node)
 {
     return $node['status'];
 }
 
-function getValue($node)
+function getValue(array $node)
 {
     return $node['value'];
 }
 
-function getKey($node)
+function getKey(array $node)
 {
     return $node['key'];
 }
 
-function getDiff($node)
+function getDiff(array $node)
 {
     return $node['children'];
 }
 
-function getBefore($node)
+function getBefore(array $node)
 {
     return getDiff($node)['before'];
 }
 
-function getAfter($node)
+function getAfter(array $node)
 {
     return getDiff($node)['after'];
 }
 
-function getMeta($node)
+function getMeta(array $node)
 {
     return $node['meta'];
 }
 
-function makeLeafNode($key, $value = null, $status = 'unchanged', $meta = [])
+function makeLeafNode(mixed $key, mixed $value = null, string $status = 'unchanged', array $meta = [])
 {
     return ['key' => $key, 'type' => 'leaf', 'value' => $value, 'status' => $status, 'meta' => $meta];
 }
 
-function makeInternalNode($key, $children, $status = 'unchanged', $meta = [])
+function makeInternalNode(mixed $key, array $children, string $status = 'unchanged', array $meta = [])
 {
     return ['key' => $key, 'type' => 'internal', 'children' => $children, 'status' => $status, 'meta' => $meta];
 }
 
-function makeDiffNode($key, $before, $after, $meta = [])
+function makeDiffNode(mixed $key, mixed $before, mixed $after, array $meta = [])
 {
     return [
         'key' => $key,
@@ -87,12 +87,12 @@ function makeDiffNode($key, $before, $after, $meta = [])
     ];
 }
 
-function treeMap($func, $tree)
+function treeMap(callable $func, array $tree)
 {
     return array_map($func, $tree);
 }
 
-function treeReduce($tree, $func, $acc)
+function treeReduce(array $tree, callable $func, mixed $acc)
 {
     return array_reduce($tree, $func, $acc);
 }

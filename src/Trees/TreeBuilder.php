@@ -15,7 +15,7 @@ use function Differ\Trees\makeLeafNode;
 use function Differ\Trees\makeDiffNode;
 use function Differ\Trees\treeMap;
 
-function buildTree($before, $after)
+function buildTree(object $before, object $after)
 {
     $beforeKeys = array_keys(get_object_vars($before));
     $afterKeys = array_keys(get_object_vars($after));
@@ -70,7 +70,7 @@ function buildTree($before, $after)
     );
 }
 
-function buildChildren($branch)
+function buildChildren(mixed $branch)
 {
     $keys = array_keys((array) $branch);
     $result = array_map(
