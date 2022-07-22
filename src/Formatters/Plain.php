@@ -69,7 +69,7 @@ function buildPlainDiff(mixed $tree)
 }
 
 
-function getPlain($tree)
+function getPlain(mixed $tree)
 {
     $treeWithPaths = addPathsToMeta($tree);
     $plainDiff = buildPlainDiff($treeWithPaths);
@@ -77,14 +77,13 @@ function getPlain($tree)
 }
 
 
-function addPathsToMeta($tree)
+function addPathsToMeta(mixed $tree)
 {
     $iter = function ($tree, $path) use (&$iter) {
         return treeMap(
             function ($node) use ($iter, $path) {
-                $path[] = getKey($node);
                 if (isLeaf($node)) {
-                    return makeLeafNode(getKey($node), getValue($node), getStatus($node), $path);
+                    return makeLeafNode(getKey($node), getValue($node), getStatus($node), [...$path, getKey($node)]);
                 }
                 if (isInternal($node)) {
                     return makeInternalNode(getKey($node), $iter(getChildren($node), $path), getStatus($node), $path);

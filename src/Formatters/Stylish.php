@@ -19,7 +19,7 @@ const INDENTS = array(
 );
 
 
-function buildStylishTree($diff, $depth)
+function buildStylishTree(mixed $diff, int $depth)
 {
     $lines = treeMap(
         function ($node) use ($depth) {
@@ -43,7 +43,7 @@ function buildStylishTree($diff, $depth)
     return implode("\n", $lines);
 }
 
-function getStylish($diff)
+function getStylish(mixed $diff)
 {
     return "{\n" . buildStylishTree($diff, 0) . "\n}";
 }
