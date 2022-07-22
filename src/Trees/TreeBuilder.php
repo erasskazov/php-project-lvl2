@@ -17,7 +17,9 @@ use function Differ\Trees\treeMap;
 
 function buildTree($before, $after)
 {
-    $unionKeys = array_keys([...((array) $before), ...((array) $after)]);
+    $beforeKeys = array_keys(get_object_vars($before));
+    $afterKeys = array_keys(get_object_vars($after));
+    $unionKeys = array_unique([...$beforeKeys, ...$afterKeys]);
     sort($unionKeys);
     return array_map(
         function ($key) use ($before, $after) {
