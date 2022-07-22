@@ -1,6 +1,9 @@
 <?php
 
+namespace Differ\Tests;
+
 use PHPUnit\Framework\TestCase;
+
 use function Differ\Differ\genDiff;
 
 class DifferTest extends TestCase
@@ -21,20 +24,37 @@ class DifferTest extends TestCase
 
     public function testStylish()
     {
-        $this->assertEquals($this->expectedStylish, genDiff($this->getFilePath("before.json"), $this->getFilePath("after.json")));
-        $this->assertEquals($this->expectedStylish, genDiff($this->getFilePath("before.yaml"), $this->getFilePath("after.yaml")));
+        $this->assertEquals(
+            $this->expectedStylish,
+            genDiff($this->getFilePath("before.json"), $this->getFilePath("after.json"))
+        );
+        $this->assertEquals(
+            $this->expectedStylish,
+            genDiff($this->getFilePath("before.yaml"), $this->getFilePath("after.yaml"))
+        );
     }
 
     public function testPlain()
     {
-        $this->assertEquals($this->expectedPlain, genDiff($this->getFilePath("before.json"), $this->getFilePath("after.json"), 'plain'));
-        $this->assertEquals($this->expectedPlain, genDiff($this->getFilePath("before.yaml"), $this->getFilePath("after.yaml"), 'plain'));
+        $this->assertEquals(
+            $this->expectedPlain,
+            genDiff($this->getFilePath("before.json"), $this->getFilePath("after.json"), 'plain')
+        );
+        $this->assertEquals(
+            $this->expectedPlain,
+            genDiff($this->getFilePath("before.yaml"), $this->getFilePath("after.yaml"), 'plain')
+        );
     }
 
     public function testJson()
     {
-        $this->assertEquals($this->expectedJson, genDiff($this->getFilePath("before.json"), $this->getFilePath("after.json"), 'json'));
-        $this->assertEquals($this->expectedJson, genDiff($this->getFilePath("before.yaml"), $this->getFilePath("after.yaml"), 'json'));
+        $this->assertEquals(
+            $this->expectedJson,
+            genDiff($this->getFilePath("before.json"), $this->getFilePath("after.json"), 'json')
+        );
+        $this->assertEquals(
+            $this->expectedJson,
+            genDiff($this->getFilePath("before.yaml"), $this->getFilePath("after.yaml"), 'json')
+        );
     }
-
 }
