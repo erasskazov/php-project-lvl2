@@ -16,11 +16,10 @@ use function Differ\Trees\getAfter;
 use function Differ\Trees\getMeta;
 use function Differ\Trees\treeMap;
 use function Differ\Trees\getDiff;
-use function Differ\Trees\Builder\getPath;
 use function Differ\Trees\isLeaf;
 use function Differ\Trees\isInternal;
 
-function valueToString($node)
+function valueToString(mixed $node)
 {
     if (isInternal($node)) {
         return '[complex value]';
@@ -38,7 +37,7 @@ function valueToString($node)
     return "'" . $value . "'";
 }
 
-function buildPlainDiff($tree)
+function buildPlainDiff(mixed $tree)
 {
     $result = array_reduce(
         $tree,
@@ -57,9 +56,10 @@ function buildPlainDiff($tree)
                 } else {
                     $string = "Property '{$path}' was removed";
                 }
-                $acc[] = $string;
-            } elseif (isInternal($node)) {
-                $acc = [...$acc, ...buildPlainDiff(getChildren($node))];
+                return  [...$acc, $string];
+            }
+            if (isInternal($node)) {
+                return [...$acc, ...buildPlainDiff(getChildren($node))];
             }
             return $acc;
         },

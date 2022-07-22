@@ -13,7 +13,7 @@ use function Differ\Trees\isLeaf;
 use function Differ\Trees\treeMap;
 use function Differ\Trees\treeReduce;
 
-function buildAssoc($tree)
+function buildAssoc(mixed $tree)
 {
     return treeReduce(
         $tree,
