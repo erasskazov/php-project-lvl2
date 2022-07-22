@@ -24,12 +24,18 @@ function buildAssoc($tree)
                 $after = getAfter($node);
                 $beforeValue = isLeaf($before) ? getValue($before) : buildAssoc(getChildren($before));
                 $afterValue = isLeaf($after) ? getValue($after) : buildAssoc(getChildren($after));
-                return [...$acc, getKey($node) => ['before' => $beforeValue, 'after' => $afterValue]];
+                // return [...$acc, getKey($node) => ['before' => $beforeValue, 'after' => $afterValue]];
+                $acc[getKey($node)] = ['before' => $beforeValue, 'after' => $afterValue];
+                return $acc;
+            } elseif (isInternal($node)) {
+                $acc[getKey($node)] = buildAssoc(getChildren($node));
+                // return $acc;
+                // return [...$acc, getKey($node) => buildAssoc(getChildren($node))];
+            } else {
+                $acc[getKey($node)] = getValue($node);
             }
-            if (isInternal($node)) {
-                return [...$acc, getKey($node) => buildAssoc(getChildren($node))];
-            }
-            return [...$acc, getKey($node) => getValue($node)];
+            return $acc;
+            // return [...$acc, getKey($node) => getValue($node)];
         },
         []
     );
