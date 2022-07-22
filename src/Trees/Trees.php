@@ -5,10 +5,10 @@ namespace Differ\Trees;
 function toString(mixed $key, mixed $value): string
 {
     if (is_bool($value)) {
-        $value = $value ? 'true' : 'false';
+        return "{$key}: " . ($value ? 'true' : 'false');
     }
-    $value = $value ?? 'null';
-    return "{$key}: {$value}";
+    $stringValue = $value ?? 'null';
+    return "{$key}: {$stringValue}";
 }
 
 function isLeaf($node)
@@ -83,10 +83,16 @@ function makeDiffNode($key, $before, $after, $meta = [])
         'type' => 'diff',
         'children' => ['before' => $before, 'after' => $after],
         'status' => 'updated',
-        'meta' => $meta];
+        'meta' => $meta
+    ];
 }
 
 function treeMap($func, $tree)
 {
     return array_map($func, $tree);
+}
+
+function treeReduce($tree, $func, $acc)
+{
+    return array_reduce($tree, $func, $acc);
 }

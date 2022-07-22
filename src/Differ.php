@@ -12,6 +12,5 @@ function genDiff(string $pathToFile1, string $pathToFile2, string $fmt = 'stylis
     $after = parseFile($pathToFile2);
     $tree = buildTree($before, $after);
     $result = formatTree($tree, $fmt);
-    // print_r($result);
     return $result;
 }

@@ -4,6 +4,7 @@ namespace Differ\Formatters;
 
 use function Differ\Formatters\Stylish\getStylish;
 use function Differ\Formatters\Plain\getPlain;
+use function Differ\Formatters\Json\getJson;
 
 function formatTree($tree, $fmt)
 {
@@ -12,5 +13,7 @@ function formatTree($tree, $fmt)
             return getStylish($tree);
         case 'plain':
             return getPlain($tree);
+        case 'json':
+            return getJson($tree);
     }
 }

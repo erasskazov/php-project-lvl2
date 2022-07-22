@@ -9,6 +9,7 @@ use function Differ\Trees\getStatus;
 use function Differ\Trees\getValue;
 use function Differ\Trees\getKey;
 use function Differ\Trees\getDiff;
+use function Differ\Trees\treeMap;
 
 const INDENTS = array(
     'added' => '+ ',
@@ -20,7 +21,7 @@ const INDENTS = array(
 
 function buildStylishTree($diff, $depth)
 {
-    $lines = array_map(
+    $lines = treeMap(
         function ($node) use ($depth) {
             $status = getStatus($node);
             if ($status === 'updated') {
@@ -34,6 +35,7 @@ function buildStylishTree($diff, $depth)
                     ": {\n" . buildStylishTree(getChildren($node), $depth + 1) .
                     "\n" . $intendBracket . "}" ;
             }
+            $key = getKey($node);
             return $intend . toString(getKey($node), getValue($node));
         },
         $diff
