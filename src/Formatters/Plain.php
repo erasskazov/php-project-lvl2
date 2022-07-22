@@ -86,9 +86,14 @@ function addPathsToMeta(mixed $tree)
                     return makeLeafNode(getKey($node), getValue($node), getStatus($node), [...$path, getKey($node)]);
                 }
                 if (isInternal($node)) {
-                    return makeInternalNode(getKey($node), $iter(getChildren($node), $path), getStatus($node), $path);
+                    return makeInternalNode(
+                        getKey($node),
+                        $iter(getChildren($node), [...$path, getKey($node)]),
+                        getStatus($node),
+                        [...$path, getKey($node)]
+                    );
                 }
-                return makeDiffNode(getKey($node), getBefore($node), getAfter($node), $path);
+                return makeDiffNode(getKey($node), getBefore($node), getAfter($node), [...$path, getKey($node)]);
             },
             $tree
         );
