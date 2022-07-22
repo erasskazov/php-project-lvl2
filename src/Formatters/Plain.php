@@ -32,6 +32,9 @@ function valueToString($node)
     if ($value === null) {
         return 'null';
     }
+    if (is_int($value)){
+        return $value;
+    }
     return "'" . $value . "'";
 }
 
