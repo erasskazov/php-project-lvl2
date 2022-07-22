@@ -23,7 +23,7 @@ function isInternal(array $node)
 
 function hasChildren(array $node)
 {
-    return is_array($node) && array_key_exists('children', $node);
+    return array_key_exists('children', $node);
 }
 
 function getChildren(array $node)

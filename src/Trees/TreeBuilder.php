@@ -53,26 +53,43 @@ function buildTree(object $before, object $after)
                 return makeLeafNode($key, $after->$key);
             }
 
+            if ($beforeIsObject && $afterIsObject) {
+                return makeDiffNode(
+                    $key,
+                    makeInternalNode($key, buildChildren($before->$key), 'removed'),
+                    makeInternalNode($key, buildChildren($after->$key), 'added')
+                );
+            }
+
             if ($beforeIsObject) {
-                $before = makeInternalNode($key, buildChildren($before->$key), 'removed');
-            } else {
-                $before = makeLeafNode($key, $before->$key, 'removed');
+                return makeDiffNode(
+                    $key,
+                    makeInternalNode($key, buildChildren($before->$key), 'removed'),
+                    makeLeafNode($key, $after->$key, 'added')
+                );
             }
 
             if ($afterIsObject) {
-                $after = makeInternalNode($key, buildChildren($after->$key), 'added');
-            } else {
-                $after = makeLeafNode($key, $after->$key, 'added');
+                return makeDiffNode(
+                    $key,
+                    makeLeafNode($key, $before->$key, 'removed'),
+                    makeInternalNode($key, buildChildren($after->$key), 'added')
+                );
             }
-            return makeDiffNode($key, $before, $after);
+
+            return makeDiffNode(
+                $key,
+                makeLeafNode($key, $before->$key, 'removed'),
+                makeLeafNode($key, $after->$key, 'added')
+            );
         },
         $unionKeys
     );
 }
 
-function buildChildren(mixed $branch)
+function buildChildren(object $branch)
 {
-    $keys = array_keys((array) $branch);
+    $keys = array_keys(get_object_vars($branch));
     $result = array_map(
         function ($key) use ($branch) {
             if (!is_object($branch->$key)) {
