@@ -2,15 +2,6 @@
 
 namespace Differ\Formatters\Stylish;
 
-use function Differ\Trees\toString;
-use function Differ\Trees\hasChildren;
-use function Differ\Trees\getChildren;
-use function Differ\Trees\getStatus;
-use function Differ\Trees\getValue;
-use function Differ\Trees\getKey;
-use function Differ\Trees\getDiff;
-use function Differ\Trees\treeMap;
-
 const INDENTS = array(
     'added' => '+ ',
     'removed' => "- ",
@@ -18,25 +9,23 @@ const INDENTS = array(
     'blank' => "  "
 );
 
-
-function buildStylishTree(mixed $diff, int $depth)
+function buildStylishTree(array $diff, int $depth)
 {
-    $lines = treeMap(
+    $lines = array_map(
         function ($node) use ($depth) {
-            $status = getStatus($node);
+            $status = array_key_exists('status', $node) ? $node['status'] : 'blank';
             if ($status === 'updated') {
-                return buildStylishTree(getDiff($node), $depth);
+                return buildStylishTree($node['diff'], $depth);
             }
             $spaces = INDENTS['blank'] . str_repeat(' ', $depth * 4);
             $intend = $spaces . INDENTS[$status];
             $intendBracket = $spaces . INDENTS['blank'];
-            if (hasChildren($node)) {
-                return $intend . getKey($node) .
-                    ": {\n" . buildStylishTree(getChildren($node), $depth + 1) .
+            if (array_key_exists('children', $node)) {
+                return $intend . $node['key'] .
+                    ": {\n" . buildStylishTree($node['children'], $depth + 1) .
                     "\n" . $intendBracket . "}" ;
             }
-            $key = getKey($node);
-            return $intend . toString(getKey($node), getValue($node));
+            return $intend . getFormattedValue($node['key'], $node['value']);
         },
         $diff
     );
@@ -46,4 +35,13 @@ function buildStylishTree(mixed $diff, int $depth)
 function getStylish(mixed $diff)
 {
     return "{\n" . buildStylishTree($diff, 0) . "\n}";
+}
+
+function getFormattedValue($key, $value)
+{
+    if (is_bool($value)) {
+        return "{$key}: " . ($value ? 'true' : 'false');
+    }
+    $stringValue = $value ?? 'null';
+    return "{$key}: {$stringValue}";
 }

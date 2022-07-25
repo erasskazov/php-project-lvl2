@@ -2,47 +2,30 @@
 
 namespace Differ\Formatters\Json;
 
-use function Differ\Trees\getBefore;
-use function Differ\Trees\getAfter;
-use function Differ\Trees\getChildren;
-use function Differ\Trees\getKey;
-use function Differ\Trees\getValue;
-use function Differ\Trees\getStatus;
-use function Differ\Trees\isInternal;
-use function Differ\Trees\isLeaf;
-use function Differ\Trees\treeMap;
-use function Differ\Trees\treeReduce;
-
 function buildAssoc(mixed $tree)
 {
-    return treeReduce(
-        $tree,
-        function ($acc, $node) {
-            $status = getStatus($node);
+    return array_map(
+        function ($node) {
+            $status = array_key_exists('status', $node) ? $node['status'] : 'nest';
             if ($status === 'updated') {
-                $before = getBefore($node);
-                $after = getAfter($node);
-                $beforeValue = isLeaf($before) ? getValue($before) : buildAssoc(getChildren($before));
-                $afterValue = isLeaf($after) ? getValue($after) : buildAssoc(getChildren($after));
-                // return [...$acc, getKey($node) => ['before' => $beforeValue, 'after' => $afterValue]];
-                $acc[getKey($node)] = ['before' => $beforeValue, 'after' => $afterValue];
-                return $acc;
-            } elseif (isInternal($node)) {
-                $acc[getKey($node)] = buildAssoc(getChildren($node));
-                // return $acc;
-                // return [...$acc, getKey($node) => buildAssoc(getChildren($node))];
+                $before = $node['diff']['before'];
+                $after = $node['diff']['after'];
+                $beforeVal = array_key_exists('children', $before) ? buildAssoc($before['children']) : $before['value'];
+                $afterVal = array_key_exists('children', $after) ? buildAssoc($after['children']) : $after['value'];
+                return ['key' => $node['key'], 'status' => 'updated', 'before' => $beforeVal, 'after' => $afterVal];
+            } elseif (array_key_exists('children', $node)) {
+                return [$node['key'] => buildAssoc($node['children']), 'status' => $status];
             } else {
-                $acc[getKey($node)] = getValue($node);
+                return [$node['key'] => $node['value'], 'status' => $status];
             }
-            return $acc;
-            // return [...$acc, getKey($node) => getValue($node)];
         },
-        []
+        $tree
     );
 }
 
 function getJson($tree)
 {
+    // $assoc = rtrim(buildAssoc($tree), '[]');
     $assoc = buildAssoc($tree);
     return json_encode($assoc, JSON_PRETTY_PRINT, JSON_UNESCAPED_UNICODE);
 }
