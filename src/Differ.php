@@ -21,7 +21,7 @@ function buildTree(object $before, object $after)
     $beforeKeys = array_keys(get_object_vars($before));
     $afterKeys = array_keys(get_object_vars($after));
     $unionKeys = array_unique([...$beforeKeys, ...$afterKeys]);
-    $sortedKeys = functional_sort($unionKeys, fn($a, $b) => $a > $b);
+    $sortedKeys = functional_sort($unionKeys, fn($a, $b) => $a <=> $b);
     return array_map(
         function ($key) use ($before, $after) {
 
