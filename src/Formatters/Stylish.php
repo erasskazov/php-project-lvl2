@@ -37,7 +37,7 @@ function getStylish(mixed $diff)
     return "{\n" . buildStylishTree($diff, 0) . "\n}";
 }
 
-function getFormattedValue($key, $value)
+function getFormattedValue(mixed $key, mixed $value)
 {
     if (is_bool($value)) {
         return "{$key}: " . ($value ? 'true' : 'false');

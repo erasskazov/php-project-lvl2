@@ -7,6 +7,9 @@ use Symfony\Component\Yaml\Yaml;
 function parseFile(string $pathToFile)
 {
     $fileContent = file_get_contents($pathToFile);
+    if ($fileContent === false) {
+        throw new \Exception("Failed file read");
+    }
     $extension = pathinfo($pathToFile, PATHINFO_EXTENSION);
     if ($extension === 'json') {
         return json_decode($fileContent);

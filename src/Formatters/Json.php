@@ -2,7 +2,7 @@
 
 namespace Differ\Formatters\Json;
 
-function buildAssoc(mixed $tree)
+function buildAssoc(array $tree)
 {
     return array_map(
         function ($node) {
@@ -23,9 +23,8 @@ function buildAssoc(mixed $tree)
     );
 }
 
-function getJson($tree)
+function getJson(array $tree)
 {
-    // $assoc = rtrim(buildAssoc($tree), '[]');
     $assoc = buildAssoc($tree);
     return json_encode($assoc, JSON_PRETTY_PRINT, JSON_UNESCAPED_UNICODE);
 }

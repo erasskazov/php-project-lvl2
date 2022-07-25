@@ -26,7 +26,7 @@ function buildPlainDiff(array $tree, string $ancestors)
 {
     $lines = array_map(
         function ($node) use ($ancestors) {
-            $path = empty($ancestors) ? "{$node['key']}" : "{$ancestors}.{$node['key']}";
+            $path = $ancestors === '' ? "{$node['key']}" : "{$ancestors}.{$node['key']}";
             if (!array_key_exists('status', $node) || $node['status'] === 'unchanged') {
                 if (array_key_exists('children', $node)) {
                     return buildPlainDiff($node['children'], $path);

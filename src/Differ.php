@@ -59,7 +59,7 @@ function buildChildren(mixed $key, mixed $branch, string $status)
     if (!is_object($branch)) {
         return ['key' => $key, 'status' => $status, 'value' => $branch];
     }
-    $iter = function ($node) use (&$iter) {
+    $iter = function (object $node) use (&$iter) {
         $keys = array_keys(get_object_vars($node));
         $result = array_map(
             function ($key) use ($node, $iter) {
